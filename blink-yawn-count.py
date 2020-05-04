@@ -1,7 +1,3 @@
-# USAGE
-# python detect_blinks.py --shape-predictor shape_predictor_68_face_landmarks.dat --video specs.avi
-# python detect_blinks.py --shape-predictor shape_predictor_68_face_landmarks.dat
-
 # import the necessary packages
 from scipy.spatial import distance as dist
 from imutils.video import FileVideoStream
