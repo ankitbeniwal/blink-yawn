@@ -156,53 +156,52 @@ while True:
                         leftEye = shape[lStart:lEnd]
                         rightEye = shape[rStart:rEnd]
                         
-                        if leftEye.all() and rightEye.all():
-                                leftEAR = eye_aspect_ratio(leftEye)
-                                rightEAR = eye_aspect_ratio(rightEye)
+                        leftEAR = eye_aspect_ratio(leftEye)
+                        rightEAR = eye_aspect_ratio(rightEye)
 
-                                # average the eye aspect ratio together for both eyes
-                                ear = (leftEAR + rightEAR) / 2.0
+                        # average the eye aspect ratio together for both eyes
+                        ear = (leftEAR + rightEAR) / 2.0
 
-                                # compute the convex hull for the left and right eye, then
-                                # visualize each of the eyes
-                                leftEyeHull = cv2.convexHull(leftEye)
-                                rightEyeHull = cv2.convexHull(rightEye)
-                                cv2.drawContours(frame, [leftEyeHull], -1, (0, 255, 0), 1)
-                                cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
+                        # compute the convex hull for the left and right eye, then
+                        # visualize each of the eyes
+                        leftEyeHull = cv2.convexHull(leftEye)
+                        rightEyeHull = cv2.convexHull(rightEye)
+                        cv2.drawContours(frame, [leftEyeHull], -1, (0, 255, 0), 1)
+                        cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
 
-                                # check to see if the eye aspect ratio is below the blink
-                                # threshold, and if so, increment the blink frame counter
-                                if ear < EYE_AR_THRESH:
-                                        COUNTER += 1
+                        # check to see if the eye aspect ratio is below the blink
+                        # threshold, and if so, increment the blink frame counter
+                        if ear < EYE_AR_THRESH:
+                                COUNTER += 1
 
-                                # otherwise, the eye aspect ratio is not below the blink
-                                # threshold
-                                else:
-                                        # if the eyes were closed for a sufficient number of
-                                        # then increment the blinks number of blinks
-                                        if COUNTER >= EYE_AR_CONSEC_FRAMES:
-                                                blinks += 1
+                        # otherwise, the eye aspect ratio is not below the blink
+                        # threshold
+                        else:
+                                # if the eyes were closed for a sufficient number of
+                                # then increment the blinks number of blinks
+                                if COUNTER >= EYE_AR_CONSEC_FRAMES:
+                                        blinks += 1
 
-                                        # reset the eye frame counter
-                                        COUNTER = 0
+                                # reset the eye frame counter
+                                COUNTER = 0
 
-                                # draw the blinks number of blinks on the frame along with
-                                # the computed eye aspect ratio for the frame
-                                cv2.putText(frame, "Blink Count: {}".format(blinks), (10, 30),
-                                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-                                cv2.putText(frame, "Yawn Count: {}".format(yawns), (10, 60),
-                                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-                                image_landmarks, lip_distance = mouth_open(frame)
-                                prev_yawn_status = yawn_status
-                                prev_lip_distance = lip_distance
-                                if lip_distance > 25 or lip_distance == -1:
-                                        yawn_status = True
-                                else:
-                                        yawn_status = False
-                                if prev_yawn_status == True and yawn_status == False:
-                                        yawns += 1
-                                
-                                prev_lip_distance = lip_distance
+                        # draw the blinks number of blinks on the frame along with
+                        # the computed eye aspect ratio for the frame
+                        cv2.putText(frame, "Blink Count: {}".format(blinks), (10, 30),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                        cv2.putText(frame, "Yawn Count: {}".format(yawns), (10, 60),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                        image_landmarks, lip_distance = mouth_open(frame)
+                        prev_yawn_status = yawn_status
+                        prev_lip_distance = lip_distance
+                        if lip_distance > 25:
+                                yawn_status = True
+                        else:
+                                yawn_status = False
+                        if prev_yawn_status == True and yawn_status == False:
+                                yawns += 1
+                        
+                        prev_lip_distance = lip_distance
          
                 # show the frame
                 cv2.imshow("Frame", frame)
